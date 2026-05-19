@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر الفردوس للأعشاب والوصفات الطبيعية</title>
+    <style>
+        :root { --main-color: #2e7d32; --accent-color: #81c784; --bg-color: #f1f8f5; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; color: #333; overflow-x: hidden; position: relative; }
+        
+        /* تأثير أوراق الشجر المتحركة في الخلفية */
+        .leaf { position: fixed; top: -10px; z-index: 999; color: rgba(46, 125, 50, 0.2); font-size: 24px; user-select: none; pointer-events: none; animation: fall linear infinite; }
+        @keyframes fall { to { transform: translateY(105vh) rotate(360deg); } }
+
+        header { background: linear-gradient(135deg, var(--main-color), #1b5e20); color: white; padding: 40px 20px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); position: relative; }
+        header h1 { margin: 0; font-size: 2.8rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); animation: pulse 3s infinite; }
+        header p { margin: 10px 0 0; opacity: 0.9; font-size: 1.2rem; }
+        
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+        .audio-control { background: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 30px; display: inline-flex; align-items: center; gap: 10px; margin-top: 15px; color: white; font-size: 0.9rem; }
+        
+        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; justify-content: center; }
+        .product-card { background: white; border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.3s ease; border: 1px solid #e0ebd3; }
+        .product-card:hover { transform: translateY(-8px); box-shadow: 0 12px 25px rgba(46, 125, 50, 0.15); }
+        
+        /* تنسيق صورة المنتج المرفوعة من الأدمن */
+        .product-img { width: 100%; height: 220px; object-fit: cover; background-color: #f0f0f0; border-bottom: 1px solid #e0ebd3; }
+        .product-info { padding: 20px; }
+        .product-card h3 { margin: 0 0 10px; color: #1b5e20; font-size: 1.4rem; }
+        .product-card p { color: #666; font-size: 0.95rem; line-height: 1.6; margin: 0 0 15px; }
+        .price { font-size: 1.4rem; color: var(--main-color); font-weight: bold; margin-bottom: 15px; display: block; }
+        
+        .btn-buy { background: linear-gradient(to left, var(--main-color), #43a047); color: white; border: none; padding: 14px; border-radius: 10px; width: 100%; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background 0.3s; }
+        .btn-buy:hover { background: #1b5e20; }
+        
+        /* النافذة المنبثقة للطلب */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(4px); }
+        .modal-content { background: white; padding: 35px; border-radius: 20px; width: 90%; max-width: 450px; box-shadow: 0 5px 30px rgba(0,0,0,0.3); position: relative; animation: slideUp 0.3s ease-out; }
+        .close-btn { position: absolute; top: 15px; left: 15px; font-size: 28px; cursor: pointer; color: #aaa; }
+        .modal h2 { margin-top: 0; color: var(--main-color); }
+        input { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-size: 1rem; }
+        .submit-btn { background-color: #e65100; color: white; border: none; padding: 14px; border-radius: 10px; width: 100%; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .submit-btn:hover { background-color: #bf360c; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<!-- المؤثرات الصوتية المضافة للموقع -->
+<audio id="rainAudio" loop>
+    <source src="https://www.soundjay.com/nature/sounds/rain-07.mp3" type="audio/mp3">
+</audio>
+<audio id="clickAudio">
+    <source src="https://www.soundjay.com/buttons/sounds/button-16.mp3" type="audio/mp3">
+</audio>
+<audio id="successAudio">
+    <source src="https://www.soundjay.com/buttons/sounds/button-3.mp3" type="audio/mp3">
+</audio>
+
+<header>
+    <h1>🌿 متجر الفردوس الطبيعي</h1>
+    <p>أجود أنواع الأعشاب الطبيعية والزيوت الطبية الخالصة</p>
+    <div class="audio-control">
+        <span>🌧𝓮𝓵 𝓯𝓾𝓽𝓭𝓸𝓾𝓼 </span>
+    </div>
+</header>
+
+<div class="container">
+    <h2 style="text-align: center; color: #222; margin-bottom: 40px;">منتجاتنا المتميزة</h2>
+    
+    <div class="products-grid">
+        {% if not products %}
+            <p style="text-align: center; grid-column: 1/-1; color: #888;">لم يتم إضافة أي منتجات بعد، يرجى إضافتها وصورها من لوحة الإدارة.</p>
+        {% endif %}
+        {% for prod in products %}
+        <div class="product-card">
+            <div>
+                <!-- هنا تظهر الصورة التي قمت أنت برفعها من صفحة الأدمن -->
+                {% if prod[4] %}
+                    <img src="/uploads/{{ prod[4] }}" class="product-img" alt="{{ prod[1] }}">
+                {% else %}
+                    <div class="product-img" style="display:flex; align-items:center; justify-content:center; color:#999;">لا توجد صورة للمنتج</div>
+                {% endif %}
+                <div class="product-info">
+                    <h3>{{ prod[1] }}</h3>
+                    <p>{{ prod[3] }}</p>
+                </div>
+            </div>
+            <div style="padding: 0 20px 20px 20px;">
+                <span class="price">{{ prod[2] }} د.ج</span>
+                <button class="btn-buy" onclick="openModal('{{ prod[1] }}')">شراء المنتج الآن 🛒</button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div id="orderModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <h2>تأكيد استمارة الطلب</h2>
+        <p id="selectedProductText" style="font-weight: bold; color: #e65100;"></p>
+        <form action="/order" method="POST" onsubmit="playSuccessSound()">
+            <input type="hidden" id="productInput" name="product">
+            <input type="text" name="name" placeholder="اسمك الكامل الثلاثي" required>
+            <input type="tel" name="phone" placeholder="رقم هاتفك (ليتصل بك الموزع)" required>
+            <input type="text" name="address" placeholder="الولاية والبلدية والقرية بدقة" required>
+            <button type="submit" class="submit-btn">تأكيد طلب الشراء 🚚</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function playClickSound() {
+        const clickAudio = document.getElementById('clickAudio');
+        clickAudio.currentTime = 0;
+        clickAudio.play().catch(e => console.log("الصوت ينتظر تفاعل"));
+    }
+
+    function playSuccessSound() {
+        const successAudio = document.getElementById('successAudio');
+        successAudio.play();
+    }
+
+    // ربط صوت النقرة بجميع الأزرار تلقائياً
+    document.addEventListener('click', function(e) {
+        if (e.target.tagName === 'BUTTON' || e.target.classList.contains('close-btn')) {
+            playClickSound();
+        }
+    });
+
+    // تفعيل صوت المطر عند أول نقرة للمستخدم في الموقع
+    window.addEventListener('click', () => {
+        const rainAudio = document.getElementById('rainAudio');
+        if (rainAudio.paused) { 
+            rainAudio.volume = 0.4;
+            rainAudio.play(); 
+        }
+    }, { once: true });
+
+    // كود صناعة أوراق الشجر المتساقطة تلقائياً
+    const leafSymbols = ['🌿', '🍃', '🌱'];
+    function createLeaf() {
+        const leaf = document.createElement('div');
+        leaf.classList.add('leaf');
+        leaf.innerText = leafSymbols[Math.floor(Math.random() * leafSymbols.length)];
+        leaf.style.left = Math.random() * 100 + 'vw';
+        leaf.style.animationDuration = Math.random() * 3 + 4 + 's'; 
+        leaf.style.opacity = Math.random() * 0.5 + 0.2;
+        document.body.appendChild(leaf);
+        setTimeout(() => { leaf.remove(); }, 7000);
+    }
+    setInterval(createLeaf, 600);
+
+    function openModal(productName) {
+        document.getElementById('orderModal').style.display = 'flex';
+        document.getElementById('selectedProductText').innerText = "المنتج المحدد: " + productName;
+        document.getElementById('productInput').value = productName;
+    }
+    function closeModal() { document.getElementById('orderModal').style.display = 'none'; }
+</script>
+
+</body>
+</html>
+

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>لوحة إدارة متجر الفردوس</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; }
+        .admin-container { max-width: 1100px; margin: auto; }
+        .section { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 30px; }
+        input, textarea, button { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
+        button { background-color: #2e7d32; color: white; border: none; font-weight: bold; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: right; }
+        th { background-color: #2c3e50; color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .btn-delete { background-color: #c62828; color: white; padding: 6px 12px; border-radius: 5px; text-decoration: none; }
+        .thumb-img { width: 60px; height: 60px; object-fit: cover; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="admin-container">
+    <h1>🎛️ لوحة إدارة متجر الفردوس (المطور لرفع الصور)</h1>
+    <hr>
+
+    <div class="section">
+        <h2>➕ إضافة منتج جديد بالصورة</h2>
+        <form action="/add_product" method="POST" enctype="multipart/form-data">
+            <input type="text" name="title" placeholder="اسم العشبة أو المنتج المكتمل" required>
+            <input type="text" name="price" placeholder="السعر بالدينار الجزائري" required>
+            <textarea name="description" placeholder="تفاصيل المنتج والفوائد العلاجية..." rows="3" required></textarea>
+            
+            <label style="font-weight: bold; color: #555; display:block; margin-top:10px;">اختر صورة للمنتج الحقيقي من جهازك:</label>
+            <input type="file" name="image" accept="image/*" required>
+            
+            <button type="submit">نشر وتحديث الواجهة بالمنتج الجديد 📣</button>
+        </form>
+    </div>
+
+    <div class="section">
+        <h2>📦 المنتجات الحالية والمنشورة بموقعك</h2>
+        <table>
+            <tr>
+                <th>الصورة</th>
+                <th>اسم المنتج</th>
+                <th>السعر الحسابي</th>
+                <th>التحكم</th>
+            </tr>
+            {% for prod in products %}
+            <tr>
+                <td>
+                    {% if prod[4] %}
+                        <img src="/uploads/{{ prod[4] }}" class="thumb-img">
+                    {% else %}
+                        بلا صورة
+                    {% endif %}
+                </td>
+                <td><strong>{{ prod[1] }}</strong></td>
+                <td>{{ prod[2] }} د.ج</td>
+                <td><a href="/delete_product/{{ prod[0] }}" class="btn-delete" onclick="return confirm('هل أنت متأكد من حذف المنتج وصورته؟')">حذف المنتج</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>📥 زبائن قاموا بالطلب والشراء</h2>
+        <table>
+            <tr>
+                <th>رقم الطلب</th>
+                <th>اسم المشتري الكامل</th>
+                <th>رقم هاتفه</th>
+                <th>عنوان الشحن التفصيلي</th>
+                <th>المنتج المطلوب</th>
+            </tr>
+            {% for ord in orders %}
+            <tr>
+                <td>{{ ord[0] }}</td>
+                <td>{{ ord[1] }}</td>
+                <td><a href="tel:{{ ord[2] }}">{{ ord[2] }}</a></td>
+                <td>{{ ord[3] }}</td>
+                <td style="color: #e65100; font-weight: bold;">{{ ord[4] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+</body>
+</html>
+
